@@ -1,6 +1,7 @@
 import pygame
 import time
 import random
+import os
 
 pygame.init()
 
@@ -23,6 +24,12 @@ SNAKE_SPEED = 15
 
 font_style = pygame.font.SysFont(None, 50)
 
+# Load sound effects
+try:
+    EAT_SOUND = pygame.mixer.Sound("eat_sound.wav")
+except FileNotFoundError:
+    print("Sound file 'eat_sound.wav' not found.")
+    EAT_SOUND = None
 
 class SnakeGame:
     def __init__(self):
@@ -54,7 +61,7 @@ class SnakeGame:
     def message(self, msg, color, y_displace=0):
         mesg = font_style.render(msg, True, color)
         dis_width_center = DIS_WIDTH / 2 - mesg.get_width() / 2
-        dis.blit(mesg, [dis_width_center, DIS_HEIGHT / 2 + y_displace])
+        DIS.blit(mesg, [dis_width_center, DIS_HEIGHT / 2 + y_displace])
 
     def game_loop(self):
         while not self.game_over:
@@ -119,6 +126,8 @@ class SnakeGame:
                 self.foodx = round(random.randrange(0, DIS_WIDTH - self.snake_block) / 20.0) * 20.0
                 self.foody = round(random.randrange(0, DIS_HEIGHT - self.snake_block) / 20.0) * 20.0
                 self.length_of_snake += 1
+                if EAT_SOUND:
+                    EAT_SOUND.play()
 
             pygame.time.Clock().tick(self.snake_speed)
 
